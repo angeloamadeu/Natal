@@ -1,1919 +1,410 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<!-- ==========================================================================
-     SEÇÃO 1: CABEÇALHO, FONTES E CONFIGURAÇÕES INICIAIS DA PÁGINA
-     Define o título ("Amigo Secreto da Chácara"), adaptação para celular e
-     carregamento do Tailwind CSS + Fontes Natalinas.
-=========================================================================== -->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amigo Secreto da Chácara 🎄</title>
-
-    <!-- Framework Tailwind CSS para layout responsivo -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Fontes do Google: 'Cinzel Decorative' (título natalino) e 'Inter' (leitura limpa) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- ======================================================================
-         SEÇÃO 2: ESTILOS VISUAIS (CSS) E ANIMAÇÕES DE NATAL
-         Controla as cores de pinheiro e dourado, título responsivo com clamp(),
-         flocos de neve, pisca-pisca sequencial da árvore e confetes.
-    ======================================================================= -->
-    <style>
-        :root {
-            --pine-dark: #071912;
-            --pine-mid: #0d2b1f;
-            --gold: #fbbf24;
-            --gold-light: #fef08a;
-            --crimson: #991b1b;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top center, #113827 0%, #071912 55%, #030d09 100%);
-            color: #f8fafc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .font-christmas {
-            font-family: 'Cinzel Decorative', serif;
-        }
-
-        /* Título principal 100% responsivo com clamp() para nunca cortar nas bordas */
-        .hero-title {
-            font-family: 'Cinzel Decorative', serif;
-            font-size: clamp(1.55rem, 4.3vw, 3.15rem);
-            line-height: 1.2;
-            padding-inline: 0.5rem;
-            word-break: break-word;
-        }
-
-        /* --- Flocos de Neve --- */
-        .snow-container {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .snowflake {
-            position: absolute;
-            top: -10px;
-            color: rgba(255, 255, 255, 0.75);
-            user-select: none;
-            animation-name: fall, sway;
-            animation-timing-function: linear, ease-in-out;
-            animation-iteration-count: infinite, infinite;
-        }
-
-        @keyframes fall {
-            0% { top: -5%; opacity: 0; }
-            15% { opacity: 0.85; }
-            85% { opacity: 0.85; }
-            100% { top: 105%; opacity: 0; }
-        }
-
-        @keyframes sway {
-            0%, 100% { transform: translateX(0px); }
-            50% { transform: translateX(25px); }
-        }
-
-        /* --- Pisca-Pisca Sequencial da Árvore de Natal --- */
-        @keyframes sequentialChase {
-            0%, 100% {
-                opacity: 0.25;
-                transform: scale(0.85);
-                filter: brightness(0.7);
-            }
-            18%, 35% {
-                opacity: 1;
-                transform: scale(1.32);
-                filter: brightness(1.6) drop-shadow(0 0 8px currentColor);
-            }
-        }
-
-        .tree-bulb {
-            transform-box: fill-box;
-            transform-origin: center;
-            animation: sequentialChase 2.4s infinite ease-in-out;
-        }
-
-        /* --- Estrela Pulsante no Topo da Árvore --- */
-        @keyframes starPulse {
-            0%, 100% {
-                transform: scale(1) rotate(0deg);
-                filter: drop-shadow(0 0 8px #fde047) drop-shadow(0 0 18px #f59e0b);
-            }
-            50% {
-                transform: scale(1.12) rotate(4deg);
-                filter: drop-shadow(0 0 14px #fef08a) drop-shadow(0 0 28px #fbbf24);
-            }
-        }
-
-        .tree-star {
-            transform-box: fill-box;
-            transform-origin: center;
-            animation: starPulse 3s infinite ease-in-out;
-        }
-
-        /* --- Cartões Translúcidos --- */
-        .glass-card {
-            background: rgba(13, 43, 31, 0.80);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(251, 191, 36, 0.28);
-            box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
-
-        /* --- Animação da Caixa de Presente Balançando no Sorteio --- */
-        @keyframes giftShake {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            15% { transform: rotate(-10deg) scale(1.08); }
-            30% { transform: rotate(10deg) scale(1.12); }
-            45% { transform: rotate(-8deg) scale(1.15); }
-            60% { transform: rotate(8deg) scale(1.12); }
-            75% { transform: rotate(-4deg) scale(1.06); }
-        }
-
-        .animate-gift-shake {
-            animation: giftShake 0.7s infinite ease-in-out;
-        }
-
-        /* --- Borda Dourada Animada do Cartão Revelado --- */
-        @keyframes shimmerGold {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .gold-shimmer-border {
-            background: linear-gradient(90deg, #b45309, #fbbf24, #fef08a, #fbbf24, #b45309);
-            background-size: 200% auto;
-            animation: shimmerGold 4s linear infinite;
-        }
-
-        /* --- Confetes --- */
-        .confetti-piece {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            z-index: 60;
-            pointer-events: none;
-            animation: confettiFall 3.2s ease-out forwards;
-        }
-
-        @keyframes confettiFall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
-        }
-    </style>
-</head>
-
-<body class="relative selection:bg-amber-500 selection:text-emerald-950">
-
-    <!-- Elementos Globais Flutuantes (Neve e Notificações) -->
-    <div id="snowContainer" class="snow-container" aria-hidden="true"></div>
-    <div id="toastContainer" class="fixed top-4 right-4 left-4 sm:left-auto sm:w-96 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-    <!-- ======================================================================
-         SEÇÃO 3: ESTRUTURA HTML PRINCIPAL (ÁRVORE, TELAS E QUADRO DA FAMÍLIA)
-    ======================================================================= -->
-    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-
-        <!-- 3.1 CABEÇALHO COM ÁRVORE DE NATAL ANIMADA -->
-        <header class="text-center mb-8">
-            <div class="flex justify-center mb-3">
-                <div class="relative w-44 h-52 sm:w-52 sm:h-60 flex items-center justify-center">
-                    <div class="absolute inset-4 rounded-full bg-amber-400/15 blur-2xl"></div>
-
-                    <!-- Árvore de Natal SVG com 20 Luzes Sequenciais -->
-                    <svg viewBox="0 0 220 260" class="w-full h-full overflow-visible drop-shadow-2xl" role="img" aria-label="Árvore de Natal com luzes piscando em sequência">
-                        <defs>
-                            <linearGradient id="foliageGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#15803d"/>
-                                <stop offset="100%" stop-color="#052e16"/>
-                            </linearGradient>
-                            <linearGradient id="foliageGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#16a34a"/>
-                                <stop offset="100%" stop-color="#064e3b"/>
-                            </linearGradient>
-                            <linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#451a03"/>
-                                <stop offset="50%" stop-color="#78350f"/>
-                                <stop offset="100%" stop-color="#451a03"/>
-                            </linearGradient>
-                            <linearGradient id="starGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#fef9c3"/>
-                                <stop offset="50%" stop-color="#facc15"/>
-                                <stop offset="100%" stop-color="#d97706"/>
-                            </linearGradient>
-                        </defs>
-
-                        <ellipse cx="110" cy="242" rx="78" ry="10" fill="rgba(255,255,255,0.16)"/>
-                        <rect x="95" y="205" width="30" height="36" rx="4" fill="url(#trunkGrad)"/>
-
-                        <path d="M110 115 L32 210 Q110 222 188 210 Z" fill="url(#foliageGrad1)" stroke="#065f46" stroke-width="1.5"/>
-                        <path d="M110 72 L46 158 Q110 168 174 158 Z" fill="url(#foliageGrad2)" stroke="#059669" stroke-width="1.5"/>
-                        <path d="M110 34 L64 106 Q110 114 156 106 Z" fill="url(#foliageGrad1)" stroke="#10b981" stroke-width="1.5"/>
-
-                        <path d="M84 82 Q112 96 138 84" fill="none" stroke="rgba(253, 224, 71, 0.35)" stroke-width="2" stroke-dasharray="3 3"/>
-                        <path d="M66 132 Q112 150 156 130" fill="none" stroke="rgba(253, 224, 71, 0.35)" stroke-width="2" stroke-dasharray="3 3"/>
-                        <path d="M48 184 Q112 204 174 182" fill="none" stroke="rgba(253, 224, 71, 0.35)" stroke-width="2" stroke-dasharray="3 3"/>
-
-                        <g transform="translate(52, 214)">
-                            <rect x="0" y="4" width="26" height="22" rx="3" fill="#dc2626"/>
-                            <rect x="11" y="4" width="4" height="22" fill="#facc15"/>
-                            <rect x="0" y="13" width="26" height="4" fill="#facc15"/>
-                        </g>
-                        <g transform="translate(142, 218)">
-                            <rect x="0" y="2" width="22" height="18" rx="3" fill="#2563eb"/>
-                            <rect x="9" y="2" width="4" height="18" fill="#f8fafc"/>
-                            <rect x="0" y="9" width="22" height="4" fill="#f8fafc"/>
-                        </g>
-
-                        <polygon class="tree-star" points="110,6 116,21 132,21 119,31 124,46 110,37 96,46 101,31 88,21 104,21" fill="url(#starGrad)"/>
-
-                        <g id="treeLights">
-                            <circle cx="110" cy="56" r="4.5" fill="#ef4444" color="#ef4444" class="tree-bulb" style="animation-delay: 0.00s;"/>
-                            <circle cx="96" cy="72" r="4.5" fill="#facc15" color="#facc15" class="tree-bulb" style="animation-delay: 0.12s;"/>
-                            <circle cx="122" cy="76" r="4.5" fill="#38bdf8" color="#38bdf8" class="tree-bulb" style="animation-delay: 0.24s;"/>
-                            <circle cx="82" cy="92" r="4.8" fill="#4ade80" color="#4ade80" class="tree-bulb" style="animation-delay: 0.36s;"/>
-                            <circle cx="108" cy="95" r="4.8" fill="#fef08a" color="#fef08a" class="tree-bulb" style="animation-delay: 0.48s;"/>
-                            <circle cx="137" cy="94" r="4.8" fill="#f43f5e" color="#f43f5e" class="tree-bulb" style="animation-delay: 0.60s;"/>
-                            <circle cx="72" cy="118" r="5" fill="#facc15" color="#facc15" class="tree-bulb" style="animation-delay: 0.72s;"/>
-                            <circle cx="98" cy="122" r="5" fill="#38bdf8" color="#38bdf8" class="tree-bulb" style="animation-delay: 0.84s;"/>
-                            <circle cx="126" cy="120" r="5" fill="#ef4444" color="#ef4444" class="tree-bulb" style="animation-delay: 0.96s;"/>
-                            <circle cx="150" cy="134" r="5" fill="#4ade80" color="#4ade80" class="tree-bulb" style="animation-delay: 1.08s;"/>
-                            <circle cx="62" cy="145" r="5.2" fill="#f43f5e" color="#f43f5e" class="tree-bulb" style="animation-delay: 1.20s;"/>
-                            <circle cx="92" cy="148" r="5.2" fill="#fef08a" color="#fef08a" class="tree-bulb" style="animation-delay: 1.32s;"/>
-                            <circle cx="122" cy="147" r="5.2" fill="#38bdf8" color="#38bdf8" class="tree-bulb" style="animation-delay: 1.44s;"/>
-                            <circle cx="158" cy="168" r="5.4" fill="#facc15" color="#facc15" class="tree-bulb" style="animation-delay: 1.56s;"/>
-                            <circle cx="52" cy="178" r="5.4" fill="#4ade80" color="#4ade80" class="tree-bulb" style="animation-delay: 1.68s;"/>
-                            <circle cx="84" cy="184" r="5.4" fill="#ef4444" color="#ef4444" class="tree-bulb" style="animation-delay: 1.80s;"/>
-                            <circle cx="116" cy="186" r="5.4" fill="#fef08a" color="#fef08a" class="tree-bulb" style="animation-delay: 1.92s;"/>
-                            <circle cx="148" cy="192" r="5.4" fill="#38bdf8" color="#38bdf8" class="tree-bulb" style="animation-delay: 2.04s;"/>
-                            <circle cx="174" cy="200" r="5.4" fill="#f43f5e" color="#f43f5e" class="tree-bulb" style="animation-delay: 2.16s;"/>
-                            <circle cx="44" cy="201" r="5.4" fill="#facc15" color="#facc15" class="tree-bulb" style="animation-delay: 2.28s;"/>
-                        </g>
-                    </svg>
-                </div>
-            </div>
-
-            <!-- Título Principal Responsivo -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-900/60 border border-amber-400/30 text-amber-200 text-xs font-semibold tracking-wider uppercase mb-2">
-                <span>✨ Edição Especial de Natal &amp; Ano Novo ✨</span>
-            </div>
-            <h1 class="hero-title font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-300 drop-shadow-sm tracking-normal max-w-full mx-auto">
-                AMIGO SECRETO DA CHÁCARA
-            </h1>
-            <p class="mt-2 text-emerald-100/90 text-sm sm:text-base max-w-xl mx-auto px-2">
-                Os 13 participantes da família já estão cadastrados! Entre com seu nome e PIN, preencha sua <strong>dica de presente obrigatória</strong> e realize seu sorteio único.
-            </p>
-
-            <!-- Selos Informativos e Status de Sincronização Online -->
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-2.5 text-xs sm:text-sm">
-                <span class="px-3.5 py-1.5 rounded-full bg-emerald-950/90 border border-amber-400/40 text-amber-300 font-semibold shadow">
-                    🎁 Presente: Somente até R$ 50,00
-                </span>
-                <span class="px-3.5 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/30 text-emerald-200 font-medium shadow">
-                    📅 Disponível até 1º de Janeiro
-                </span>
-                <span id="connectionStatus" class="px-3.5 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 shadow">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    Conectando...
-                </span>
-            </div>
-
-            <!-- Aviso rápido caso o site esteja no GitHub sem banco em nuvem configurado ainda -->
-            <div id="localWarningBanner" class="hidden mt-4 max-w-xl mx-auto p-3 rounded-2xl bg-amber-950/85 border border-amber-400/50 text-amber-100 text-xs leading-relaxed">
-                ⚠️ <strong>Atenção Organizador:</strong> O site está rodando em <strong>Modo Local</strong> (os dados ficam apenas neste aparelho). Para sincronizar entre todos os celulares da família pelo GitHub, entre em <strong>🛡️ Administrador Geral (PIN 2511)</strong> e cole a configuração do Firebase!
-            </div>
-        </header>
-
-        <!-- 3.2 MENU DE NAVEGAÇÃO -->
-        <nav id="mainNav" class="flex flex-wrap justify-center gap-2 mb-6">
-            <button onclick="switchTab('login')" id="tab-login" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-gradient-to-r from-amber-500 to-yellow-500 text-emerald-950 shadow-lg shadow-amber-500/20">
-                🎄 Entrar para Sortear
-            </button>
-            <button onclick="switchTab('admin')" id="tab-admin" class="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all bg-emerald-950/80 text-amber-200 border border-amber-500/30 hover:border-amber-400">
-                🛡️ Administrador Geral
-            </button>
-        </nav>
-
-        <!-- 3.3 TELA DE LOGIN + EXPLICAÇÃO SOBRE DICA E PIN -->
-        <section id="view-login" class="max-w-lg mx-auto space-y-5">
-            <div class="glass-card rounded-3xl p-6 sm:p-8">
-                <div class="text-center mb-6">
-                    <h2 class="text-xl sm:text-2xl font-bold text-amber-300">Entrar na Minha Conta</h2>
-                    <p class="text-xs sm:text-sm text-emerald-200/85 mt-1">
-                        Selecione seu nome e digite o PIN inicial (<strong class="text-amber-300">1234</strong>) ou seu PIN pessoal.
-                    </p>
-                </div>
-
-                <form id="loginForm" class="space-y-4">
-                    <div>
-                        <label for="loginParticipantSelect" class="block text-xs font-semibold uppercase tracking-wider text-amber-200/90 mb-1.5">
-                            Quem é você? (ou Administrador Geral)
-                        </label>
-                        <select id="loginParticipantSelect" required class="w-full px-4 py-3.5 rounded-xl bg-emerald-950/90 border border-emerald-600/60 text-white focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 text-base">
-                            <option value="">Carregando lista da família...</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="loginPinInput" class="block text-xs font-semibold uppercase tracking-wider text-amber-200/90 mb-1.5">
-                            Senha PIN (4 dígitos)
-                        </label>
-                        <input type="password" id="loginPinInput" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="1234" required
-                            class="w-full px-4 py-3.5 rounded-xl bg-emerald-950/90 border border-emerald-600/60 text-white text-center text-2xl tracking-[0.6em] font-bold focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20">
-                    </div>
-
-                    <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-bold text-base shadow-lg shadow-red-950/60 border border-amber-400/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
-                        <span>🎅 Acessar Minha Conta</span>
-                    </button>
-                </form>
-
-                <div class="mt-4 pt-3 border-t border-emerald-800/60 text-center">
-                    <p class="text-[11px] text-emerald-300/80">
-                        🔒 <strong>Segurança garantida:</strong> Cada pessoa sorteia <strong>apenas 1 vez</strong>. Somente o <strong>Administrador Geral</strong> pode resetar o sorteio.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Explicação Inicial sobre Dica Obrigatória e PIN Pessoal -->
-            <div class="glass-card rounded-3xl p-5 sm:p-6 border-amber-400/40 bg-emerald-950/70">
-                <div class="flex items-start gap-3">
-                    <div class="text-2xl sm:text-3xl shrink-0">💡</div>
-                    <div>
-                        <h3 class="text-sm sm:text-base font-bold text-amber-300">
-                            Regras Importantes para Todos!
-                        </h3>
-                        <ul class="text-xs sm:text-sm text-emerald-100/90 mt-2 space-y-1.5 list-disc list-inside leading-relaxed">
-                            <li><strong>Dica Obrigatória (inclusive para quem já sorteou):</strong> O sistema só libera o sorteio e a visualização do seu amigo secreto depois que você salvar sua <strong>Dica de Presente (até R$ 50,00)</strong>!</li>
-                            <li><strong>Crie seu PIN Pessoal:</strong> Ao entrar, troque a senha padrão <code class="px-1 rounded bg-black/40 text-amber-300">1234</code> por um PIN só seu para ninguém espiar quem você tirou.</li>
-                        </ul>
-                        <div class="mt-3 p-3 rounded-xl bg-black/30 border border-emerald-700/50">
-                            <span class="block text-[11px] font-bold uppercase tracking-wider text-amber-300/90 mb-1">
-                                ✨ Exemplos de boas dicas (até R$ 50,00):
-                            </span>
-                            <ul class="text-xs text-emerald-100/85 space-y-1 list-disc list-inside">
-                                <li><em>"Camiseta tamanho M ou G, cores neutras, ou chocolates"</em></li>
-                                <li><em>"Livro de suspense, caneca temática de café ou garrafa térmica"</em></li>
-                                <li><em>"Perfume doce/hidratante, chinelo nº 38 ou necessaire"</em></li>
-                                <li><em>"Meias divertidas, kit churrasco, boné ou copo térmico"</em></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3.4 TELA DO PARTICIPANTE LOGADO (DICA OBRIGATÓRIA + PIN + SORTEIO/VISUALIZAÇÃO) -->
-        <section id="view-dashboard" class="hidden max-w-xl mx-auto">
-            <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-                <!-- Cabeçalho do Participante -->
-                <div class="flex items-center justify-between gap-3 pb-4 mb-5 border-b border-emerald-700/50">
-                    <div>
-                        <span class="text-xs uppercase tracking-wider text-amber-300/90 font-semibold">Olá, participante!</span>
-                        <h2 id="dashUserName" class="text-xl sm:text-2xl font-bold text-white">Nome</h2>
-                    </div>
-                    <button onclick="logoutUser()" class="px-3.5 py-2 rounded-xl bg-emerald-950/90 hover:bg-red-900/60 border border-emerald-700/60 text-xs font-semibold text-emerald-200 hover:text-white transition">
-                        Sair 🚪
-                    </button>
-                </div>
-
-                <!-- AVISO DE SEGURANÇA DO PIN (APARECE SE AINDA ESTIVER USANDO O PADRÃO 1234) -->
-                <div id="defaultPinAlertBox" class="hidden mb-5 p-4 rounded-2xl bg-amber-950/85 border-2 border-amber-400/70 text-amber-100 shadow-lg">
-                    <div class="flex items-start gap-2.5">
-                        <span class="text-xl shrink-0">🔐</span>
-                        <div class="flex-1">
-                            <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-300">
-                                Proteja seu Sigilo: Troque o PIN Padrão (1234)!
-                            </h3>
-                            <p class="text-xs text-amber-100/90 mt-1 mb-2.5 leading-relaxed">
-                                Você ainda está usando a senha inicial <strong>1234</strong>. Crie agora um PIN pessoal de 4 números para que ninguém da família entre na sua conta e descubra quem você tirou!
-                            </p>
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <input type="text" id="quickNewPinInput" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="Novo PIN (ex: 4829)"
-                                    class="flex-1 px-3.5 py-2 rounded-xl bg-black/50 border border-amber-400/60 text-white text-sm font-bold text-center tracking-widest focus:outline-none focus:border-amber-300">
-                                <button type="button" onclick="saveQuickPersonalPin()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-emerald-950 font-extrabold text-xs sm:text-sm shadow transition shrink-0">
-                                    🔒 Salvar Meu PIN Pessoal
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PASSO 1: DICA DE PRESENTE OBRIGATÓRIA (BLOQUEIA SORTEIO E VISUALIZAÇÃO SE VAZIA) -->
-                <div id="wishlistStepBox" class="mb-6 p-4 sm:p-5 rounded-2xl bg-emerald-950/85 border border-amber-400/40">
-                    <div class="flex items-center justify-between gap-2 mb-1.5">
-                        <label for="myWishlistEdit" class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-300">
-                            📝 Sua Dica de Presente <span class="text-red-300">(Obrigatória)</span>
-                        </label>
-                        <span id="wishlistStatusBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-400/30">
-                            ⚠️ Pendente
-                        </span>
-                    </div>
-
-                    <p class="text-xs text-emerald-100/85 mb-3 leading-relaxed">
-                        Escreva o que você gostaria de ganhar (valor <strong>somente até R$ 50,00</strong>). Essa dica fica visível em tempo real para quem tirou você!
-                    </p>
-
-                    <!-- Exemplos Clicáveis -->
-                    <div class="mb-3">
-                        <span class="block text-[11px] text-amber-200/80 font-semibold mb-1.5">
-                            Toque em um exemplo para preencher ou digite o seu:
-                        </span>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button type="button" onclick="applyWishlistExample('Camiseta tamanho M, chocolate amargo ou caneca criativa')" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-900/90 hover:bg-emerald-800 border border-emerald-600/50 text-emerald-100 transition">
-                                👕 Camiseta / Chocolate
-                            </button>
-                            <button type="button" onclick="applyWishlistExample('Livro de suspense/romance, garrafa térmica ou café especial')" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-900/90 hover:bg-emerald-800 border border-emerald-600/50 text-emerald-100 transition">
-                                📚 Livro / Garrafa Térmica
-                            </button>
-                            <button type="button" onclick="applyWishlistExample('Hidratante corporal, perfume doce ou chinelo nº 37/38')" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-900/90 hover:bg-emerald-800 border border-emerald-600/50 text-emerald-100 transition">
-                                🧴 Hidratante / Chinelo
-                            </button>
-                            <button type="button" onclick="applyWishlistExample('Kit churrasco, copo térmico, boné ou camiseta G')" class="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-900/90 hover:bg-emerald-800 border border-emerald-600/50 text-emerald-100 transition">
-                                🥩 Kit Churrasco / Copo
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Campo + Botão Salvar Dica -->
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="myWishlistEdit" maxlength="180" placeholder="Ex: Camiseta M, chocolate ao leite, caneca..."
-                            class="flex-1 px-4 py-3 rounded-xl bg-black/40 border border-emerald-500/60 text-white text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20">
-                        <button type="button" onclick="saveMyWishlist()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-sm shadow transition shrink-0">
-                            💾 Salvar Dica
-                        </button>
-                    </div>
-
-                    <!-- Alerta de Bloqueio Obrigatório -->
-                    <div id="wishlistWarningAlert" class="hidden mt-3 p-3 rounded-xl bg-red-950/90 border border-red-400 text-red-100 text-xs font-medium flex items-center gap-2">
-                        <span class="text-base">🚨</span>
-                        <span><strong>Obrigatório!</strong> Escreva e clique em <strong>"Salvar Dica"</strong> (mínimo 5 letras) para liberar seu sorteio ou visualizar quem você tirou!</span>
-                    </div>
-                </div>
-
-                <!-- BLOQUEIO DE VISUALIZAÇÃO PARA QUEM JÁ SORTEOU MAS AINDA NÃO COLOCOU A PRÓPRIA DICA -->
-                <div id="lockedRevealNoticeBox" class="hidden p-6 rounded-2xl bg-red-950/75 border-2 border-red-400/70 text-center space-y-3">
-                    <div class="text-4xl">🔒</div>
-                    <h3 class="text-lg font-extrabold text-amber-300">
-                        Visualização Bloqueada Temporariamente!
-                    </h3>
-                    <p class="text-xs sm:text-sm text-emerald-100/95 leading-relaxed">
-                        Você já realizou o seu sorteio, mas <strong>ainda não preencheu a sua própria Dica de Presente</strong>!
-                    </p>
-                    <p class="text-xs text-amber-200/90 bg-black/35 p-3 rounded-xl border border-amber-400/30">
-                        💡 Para ser justo com quem tirou você, preencha e salve sua dica acima (valor <strong>somente até R$ 50,00</strong>). Assim que clicar em <strong>"Salvar Dica"</strong>, o nome do seu amigo secreto e a dica dele aparecerão aqui na hora!
-                    </p>
-                </div>
-
-                <!-- PASSO 2 - CASO A: AINDA NÃO SORTEOU -->
-                <div id="drawPendingBox" class="text-center py-3">
-                    <div class="w-20 h-20 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 border-2 border-amber-400 flex items-center justify-center text-4xl shadow-xl shadow-red-950/70" id="giftBoxIcon">
-                        🎁
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-amber-200 mb-1.5">
-                        Passo 2: Realizar Sorteio Único
-                    </h3>
-                    <p id="drawLockExplanation" class="text-xs sm:text-sm text-emerald-100/85 max-w-md mx-auto mb-5 leading-relaxed">
-                        Salve sua dica de presente acima para liberar o sorteio. Você só poderá sortear <strong>uma única vez</strong>!
-                    </p>
-
-                    <button id="btnExecuteDraw" onclick="executeSecretDraw()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-400 text-emerald-950 font-black text-base sm:text-lg shadow-xl shadow-amber-500/25 transition-all active:scale-95">
-                        🎲 Realizar Meu Sorteio!
-                    </button>
-                    <p id="drawPoolHint" class="mt-3 text-xs text-emerald-300/75"></p>
-                </div>
-
-                <!-- PASSO 2 - CASO B: JÁ SORTEOU E JÁ SALVOU A PRÓPRIA DICA -->
-                <div id="drawCompletedBox" class="hidden">
-                    <div class="p-[2px] rounded-2xl gold-shimmer-border shadow-2xl">
-                        <div class="bg-gradient-to-b from-red-950 via-[#2a0a0a] to-emerald-950 rounded-2xl p-6 text-center">
-                            <span class="inline-block px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-bold uppercase tracking-widest mb-3">
-                                🤫 Seu Amigo Secreto é
-                            </span>
-                            <div class="text-2xl sm:text-4xl font-christmas font-black text-amber-300 my-2 drop-shadow" id="revealedTargetName">
-                                ---
-                            </div>
-                            <p class="text-xs text-amber-200/80 mb-4">
-                                Valor limite do presente: <strong>Somente até R$ 50,00</strong>
-                            </p>
-
-                            <!-- Dica de Presente do Amigo Tirado (Atualizada em Tempo Real!) -->
-                            <div class="mt-4 p-4 rounded-xl bg-black/45 border border-amber-400/35 text-left">
-                                <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                                    <span class="text-xs font-bold uppercase tracking-wider text-amber-300">
-                                        💡 Dica de presente que essa pessoa deixou:
-                                    </span>
-                                    <span id="targetWishlistLiveBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                                        ✨ Dica salva
-                                    </span>
-                                </div>
-                                <p id="revealedTargetWishlist" class="text-sm text-emerald-50 italic leading-relaxed">
-                                    Carregando dica...
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 p-3.5 rounded-xl bg-emerald-950/80 border border-emerald-600/40 text-center text-xs text-emerald-200/90 leading-relaxed">
-                        🔒 <strong>Sorteio concluído e travado!</strong> Não é possível sortear novamente. Se o seu amigo secreto atualizar a dica dele, ela aparecerá aqui automaticamente até <strong>1º de janeiro</strong>!
-                    </div>
-                </div>
-
-                <!-- Alteração de PIN pessoal (sempre disponível no rodapé do painel do usuário) -->
-                <div class="mt-6 pt-5 border-t border-emerald-700/50">
-                    <label for="myNewPinInput" class="block text-xs font-bold uppercase tracking-wider text-emerald-300/90 mb-1.5">
-                        🔐 Alterar meu PIN pessoal (4 números)
-                    </label>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="myNewPinInput" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="Novo PIN de 4 números"
-                            class="flex-1 px-4 py-2 rounded-xl bg-emerald-950/90 border border-emerald-600/60 text-white text-sm focus:outline-none focus:border-amber-400">
-                        <button type="button" onclick="changeMyPersonalPin()" class="px-4 py-2 rounded-xl bg-amber-600/85 hover:bg-amber-500 text-emerald-950 font-bold text-xs sm:text-sm transition shrink-0">
-                            Atualizar Meu PIN
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3.5 PAINEL DO ADMINISTRADOR GERAL EXCLUSIVO (PIN 2511) + ASSISTENTE GITHUB -->
-        <section id="view-admin" class="hidden max-w-3xl mx-auto">
-            <!-- Tela de Bloqueio do Administrador Geral -->
-            <div id="adminLockBox" class="max-w-md mx-auto glass-card rounded-3xl p-6 sm:p-8 text-center border-amber-400/50">
-                <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-3xl">
-                    🛡️
-                </div>
-                <h2 class="text-xl font-bold text-amber-300">Administrador Geral (Exclusivo)</h2>
-                <p class="text-xs sm:text-sm text-emerald-200/85 mt-1.5 mb-5 leading-relaxed">
-                    Área restrita ao organizador responsável. Somente o <strong>Administrador Geral</strong> pode configurar a nuvem do GitHub, resetar o sorteio ou restaurar PINs.
-                </p>
-                <form id="adminUnlockForm" class="space-y-4">
-                    <div>
-                        <label for="adminMasterInput" class="block text-xs font-semibold uppercase tracking-wider text-amber-200/90 mb-1.5">
-                            PIN do Administrador Geral (4 dígitos)
-                        </label>
-                        <input type="password" id="adminMasterInput" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required placeholder="••••"
-                            class="w-full px-4 py-3.5 rounded-xl bg-emerald-950/90 border border-emerald-600/60 text-white text-center text-2xl tracking-[0.6em] font-bold focus:outline-none focus:border-amber-400">
-                    </div>
-                    <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-emerald-950 font-extrabold shadow-lg transition">
-                        🔓 Entrar como Administrador Geral
-                    </button>
-                </form>
-            </div>
-
-            <!-- Painel Aberto do Administrador Geral -->
-            <div id="adminPanelBox" class="hidden space-y-6">
-
-                <!-- CARD DE HOSPEDAGEM GITHUB + SINCRONIZAÇÃO EM NUVEM REAL (FIREBASE) -->
-                <div class="glass-card rounded-3xl p-6 border-2 border-amber-400/60 bg-gradient-to-br from-emerald-950/95 via-[#0b2a1e] to-amber-950/30">
-                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <h3 class="text-base sm:text-lg font-extrabold text-amber-300 flex items-center gap-2">
-                            <span>🌐 Configurar Sincronização Online (Para funcionar entre vários celulares no GitHub)</span>
-                        </h3>
-                        <span id="adminCloudPill" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40">
-                            Verificando...
-                        </span>
-                    </div>
-
-                    <p class="text-xs sm:text-sm text-emerald-100/90 mb-4 leading-relaxed">
-                        O <strong>GitHub Pages</strong> hospeda o site gratuitamente, mas por ser estático ele precisa de um banco de dados gratuito na nuvem (<strong>Firebase Firestore</strong>) para que quando você sortear no seu celular, o celular da sua esposa e dos familiares atualize na mesma hora!
-                    </p>
-
-                    <!-- Passo a Passo em 4 Etapas -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4 text-xs">
-                        <div class="p-3 rounded-xl bg-black/35 border border-emerald-700/50">
-                            <span class="font-bold text-amber-300 block mb-0.5">1️⃣ Criar Projeto Gratuito</span>
-                            Acesse <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" class="underline text-amber-200 font-semibold">console.firebase.google.com</a>, clique em <em>"Criar um projeto"</em> (pode desativar o Google Analytics) e depois no ícone Web <code class="bg-black/50 px-1 rounded">&lt;/&gt;</code>.
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/35 border border-emerald-700/50">
-                            <span class="font-bold text-amber-300 block mb-0.5">2️⃣ Ativar Banco Firestore</span>
-                            No menu lateral, vá em <strong>Criação → Firestore Database → Criar banco de dados</strong> e escolha <strong>"Iniciar no modo de teste"</strong> (permite leitura e gravação imediata).
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/35 border border-emerald-700/50">
-                            <span class="font-bold text-amber-300 block mb-0.5">3️⃣ Colar o firebaseConfig Abaixo</span>
-                            Copie o bloco <code class="bg-black/50 px-1 rounded">const firebaseConfig = { ... };</code> gerado pelo Firebase e cole na caixa abaixo.
-                        </div>
-                        <div class="p-3 rounded-xl bg-black/35 border border-emerald-700/50">
-                            <span class="font-bold text-amber-300 block mb-0.5">4️⃣ Baixar index.html e Subir no GitHub</span>
-                            Clique em <strong>"Baixar index.html Pronto para GitHub"</strong> e substitua o arquivo <code class="bg-black/50 px-1 rounded">index.html</code> no seu repositório do GitHub!
-                        </div>
-                    </div>
-
-                    <!-- Área para Colar o firebaseConfig -->
-                    <div class="space-y-3">
-                        <label for="firebaseConfigPasteArea" class="block text-xs font-bold uppercase tracking-wider text-amber-200">
-                            Cole aqui o código <code class="text-amber-300">firebaseConfig</code> do Firebase Console:
-                        </label>
-                        <textarea id="firebaseConfigPasteArea" rows="5" placeholder='Exemplo:
-const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "amigo-chacara.firebaseapp.com",
-  projectId: "amigo-chacara",
-  storageBucket: "amigo-chacara.firebasestorage.app",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
-};'
-                            class="w-full p-3.5 rounded-2xl bg-black/55 border border-emerald-600/60 text-emerald-100 font-mono text-xs focus:outline-none focus:border-amber-400"></textarea>
-
-                        <div class="flex flex-wrap gap-2.5">
-                            <button type="button" onclick="applyAndTestFirebaseConfig()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm shadow">
-                                ⚡ Conectar Nuvem Agora
-                            </button>
-                            <button type="button" onclick="downloadReadyGitHubHtml()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-400 text-emerald-950 font-extrabold text-xs sm:text-sm shadow-lg">
-                                ⬇️ Baixar index.html Pronto para GitHub
-                            </button>
-                            <button type="button" onclick="clearSavedCloudConfig()" class="px-3.5 py-2.5 rounded-xl bg-red-950/80 hover:bg-red-900 border border-red-500/40 text-red-200 text-xs font-semibold">
-                                Limpar Config
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD DE GERENCIAMENTO DOS PARTICIPANTES E RESET DO SORTEIO -->
-                <div class="glass-card rounded-3xl p-6 border-amber-400/50">
-                    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-emerald-700/50">
-                        <div>
-                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">
-                                🛡️ Controle Geral da Família
-                            </span>
-                            <h2 class="text-xl font-bold text-white">Participantes &amp; Sorteio</h2>
-                            <p class="text-xs text-emerald-200/80">Gerencie nomes, restaure PINs esquecidos ou resete o sorteio.</p>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                            <button onclick="copyWhatsAppInvite()" class="px-3.5 py-2 rounded-xl bg-green-600 hover:bg-green-500 text-white text-xs font-bold shadow flex items-center gap-1.5">
-                                <span>📲 Copiar Convite WhatsApp</span>
-                            </button>
-                            <button onclick="lockAdminPanel()" class="px-3.5 py-2 rounded-xl bg-emerald-950 border border-emerald-700 hover:border-red-400 text-xs text-emerald-200">
-                                Sair do Admin 🔒
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Adicionar Novo Participante -->
-                    <form id="adminAddParticipantForm" class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-emerald-950/60 p-4 rounded-2xl border border-emerald-700/40 mb-6">
-                        <div class="sm:col-span-5">
-                            <label class="block text-[11px] uppercase font-bold text-amber-200/80 mb-1">Adicionar Participante</label>
-                            <input type="text" id="adminNewName" required maxlength="35" placeholder="Nome do familiar"
-                                class="w-full px-3.5 py-2.5 rounded-xl bg-emerald-950 border border-emerald-600/60 text-white text-sm focus:outline-none focus:border-amber-400">
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label class="block text-[11px] uppercase font-bold text-amber-200/80 mb-1">PIN Inicial (4 díg.)</label>
-                            <input type="text" id="adminNewPin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" value="1234" required
-                                class="w-full px-3.5 py-2.5 rounded-xl bg-emerald-950 border border-emerald-600/60 text-white text-center font-bold text-sm focus:outline-none focus:border-amber-400">
-                        </div>
-                        <div class="sm:col-span-4 flex items-end">
-                            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-emerald-950 font-extrabold text-sm shadow">
-                                + Adicionar Nome
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Tabela de Participantes -->
-                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-amber-200">
-                            Participantes Cadastrados (<span id="adminTotalCount">0</span>)
-                        </h3>
-                        <button onclick="openResetModal()" class="px-3.5 py-1.5 rounded-xl bg-red-950/90 hover:bg-red-800 border border-red-500/50 text-xs font-bold text-red-200 transition">
-                            🔄 Resetar Todo o Sorteio (Exclusivo Admin)
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto rounded-2xl border border-emerald-700/50">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-emerald-950/90 text-amber-300 text-xs uppercase">
-                                <tr>
-                                    <th class="px-4 py-3">Nome</th>
-                                    <th class="px-4 py-3">PIN</th>
-                                    <th class="px-4 py-3">Dica</th>
-                                    <th class="px-4 py-3">Status Sorteio</th>
-                                    <th class="px-4 py-3 text-right">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminParticipantsTable" class="divide-y divide-emerald-800/50 bg-emerald-950/40">
-                                <!-- Preenchido via JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3.6 QUADRO GERAL DA FAMÍLIA (TEMPO REAL SEM SPOILERS) -->
-        <section class="mt-8 max-w-3xl mx-auto">
-            <div class="glass-card rounded-3xl p-5 sm:p-6">
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-                    <div>
-                        <h3 class="text-base sm:text-lg font-bold text-amber-300">
-                            🎄 Quadro da Família — Progresso em Tempo Real
-                        </h3>
-                        <p class="text-xs text-emerald-200/75">
-                            Acompanhe quem já preencheu a dica e sorteou (o resultado de cada um é 100% secreto!).
-                        </p>
-                    </div>
-                    <div id="progressPill" class="px-3 py-1 rounded-full bg-emerald-950 border border-amber-400/30 text-xs font-bold text-amber-300">
-                        0 / 13 sortearam
-                    </div>
-                </div>
-
-                <!-- Barra de Progresso -->
-                <div class="w-full h-2.5 bg-emerald-950 rounded-full overflow-hidden mb-4 border border-emerald-800">
-                    <div id="progressBar" class="h-full bg-gradient-to-r from-red-500 via-amber-400 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
-                </div>
-
-                <div id="publicStatusGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-                    <!-- Cards preenchidos via JavaScript -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Rodapé -->
-        <footer class="mt-10 text-center text-xs text-emerald-300/60 pb-6">
-            <p>🎄 Amigo Secreto da Chácara • Presente somente até R$ 50,00 • Ativo até 1º de Janeiro</p>
-        </footer>
-    </div>
-
-    <!-- Modal Customizado para Confirmações -->
-    <div id="customModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="glass-card rounded-3xl max-w-md w-full p-6 border border-amber-400/40">
-            <h3 id="modalTitle" class="text-lg font-bold text-amber-300 mb-2">Confirmar ação</h3>
-            <p id="modalMessage" class="text-sm text-emerald-100/90 mb-6 leading-relaxed"></p>
-            <div class="flex justify-end gap-3">
-                <button onclick="closeCustomModal()" class="px-4 py-2 rounded-xl bg-emerald-950 border border-emerald-700 text-sm text-emerald-200 hover:bg-emerald-900">
-                    Cancelar
-                </button>
-                <button id="modalConfirmBtn" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm">
-                    Confirmar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ======================================================================
-         SEÇÃO 4: CONFIGURAÇÃO DE HOSPEDAGEM (GITHUB + FIREBASE) & BANCO EM TEMPO REAL
-         Para hospedar no GitHub Pages e sincronizar entre todos os celulares:
-         Cole o seu objeto firebaseConfig dentro de CONFIGURACAO_NUVEM_HOSPEDAGEM
-         ou use o botão "Baixar index.html Pronto para GitHub" no Painel Admin!
-    ======================================================================= -->
-    <script type="module">
-        import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import {
-            getFirestore, doc, setDoc, getDocs, updateDoc, deleteDoc,
-            onSnapshot, collection, runTransaction
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --------------------------------------------------------------------
-        // 4.1 BLOCO DE CONFIGURAÇÃO DA NUVEM PARA HOSPEDAGEM NO GITHUB
-        // Cole aqui o objeto gerado no Firebase Console (ou gere pelo Painel Admin):
-        // --------------------------------------------------------------------
-        const CONFIGURACAO_NUVEM_HOSPEDAGEM = null;
-        /* EXEMPLO DE COMO FICA PREENCHIDO:
-        const CONFIGURACAO_NUVEM_HOSPEDAGEM = {
-            apiKey: "AIzaSyExemploDeChaveDoSeuProjeto",
-            authDomain: "amigo-secreto-chacara.firebaseapp.com",
-            projectId: "amigo-secreto-chacara",
-            storageBucket: "amigo-secreto-chacara.firebasestorage.app",
-            messagingSenderId: "123456789000",
-            appId: "1:123456789000:web:abcdef123456"
-        };
-        */
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'amigo-secreto-chacara-2026';
-        const LOCAL_STORAGE_KEY = `amigo_secreto_chacara_db_${appId}`;
-        const SAVED_CLOUD_CONFIG_KEY = `amigo_secreto_chacara_firebase_cfg`;
-
-        // Credenciais Exclusivas do Administrador Geral
-        const GENERAL_ADMIN_ID = '__ADMIN_GERAL__';
-        const GENERAL_ADMIN_PIN = '2511';
-
-        // Lista oficial dos 13 participantes pré-cadastrados com PIN inicial '1234'
-        const INITIAL_FAMILY_MEMBERS = [
-            { id: 'fam_01_angelo',    name: 'Angelo Amadeu',    pin: '1234' },
-            { id: 'fam_02_adenilson', name: 'Adenilson Amadeu', pin: '1234' },
-            { id: 'fam_03_higor',     name: 'Higor Amadeu',     pin: '1234' },
-            { id: 'fam_04_josefa',    name: 'Josefa Oliveira',  pin: '1234' },
-            { id: 'fam_05_antonio',   name: 'Antonio',          pin: '1234' },
-            { id: 'fam_06_celina',    name: 'Celina',           pin: '1234' },
-            { id: 'fam_07_rose',      name: 'Rose',             pin: '1234' },
-            { id: 'fam_08_geovana',   name: 'Geovana',          pin: '1234' },
-            { id: 'fam_09_carol',     name: 'Carol',            pin: '1234' },
-            { id: 'fam_10_roberto',   name: 'Roberto',          pin: '1234' },
-            { id: 'fam_11_heloise',   name: 'Heloise',          pin: '1234' },
-            { id: 'fam_12_eduardo',   name: 'Eduardo',          pin: '1234' },
-            { id: 'fam_13_gabrielly', name: 'Gabrielly',        pin: '1234' }
-        ];
-
-        // Variáveis de controle da aplicação
-        let storageMode = 'initializing'; // 'firebase' ou 'local'
-        let app = null;
-        let auth = null;
-        let db = null;
-        let unsubscribeSnapshot = null;
-        let activeFirebaseConfigObj = null;
-        let participants = [];
-        let loggedParticipantId = null;
-        let isAdminUnlocked = false;
-        let modalCallback = null;
-
-        // --------------------------------------------------------------------
-        // 4.2 EFEITOS VISUAIS (NEVE, CONFETES E MENSAGENS TOAST)
-        // --------------------------------------------------------------------
-        function createSnowflakes() {
-            const container = document.getElementById('snowContainer');
-            const symbols = ['❄', '❅', '❆', '•'];
-            for (let i = 0; i < 28; i++) {
-                const flake = document.createElement('div');
-                flake.className = 'snowflake';
-                flake.textContent = symbols[i % symbols.length];
-                flake.style.left = `${Math.random() * 100}%`;
-                flake.style.fontSize = `${Math.random() * 12 + 8}px`;
-                flake.style.animationDuration = `${Math.random() * 8 + 7}s, ${Math.random() * 3 + 2.5}s`;
-                flake.style.animationDelay = `${Math.random() * 8}s, 0s`;
-                container.appendChild(flake);
-            }
-        }
-        createSnowflakes();
-
-        window.showToast = function(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            const colors = {
-                success: 'bg-emerald-900/95 border-emerald-400 text-emerald-50',
-                error: 'bg-red-950/95 border-red-400 text-red-100',
-                info: 'bg-amber-950/95 border-amber-400 text-amber-100'
-            };
-            toast.className = `pointer-events-auto px-4 py-3 rounded-2xl border shadow-2xl text-sm font-medium transition-all duration-300 ${colors[type] || colors.info}`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-10px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 4200);
-        };
-
-        function launchConfetti() {
-            const colors = ['#fbbf24', '#ef4444', '#22c55e', '#fef08a', '#38bdf8'];
-            for (let i = 0; i < 55; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'confetti-piece';
-                piece.style.left = `${Math.random() * 100}vw`;
-                piece.style.backgroundColor = colors[i % colors.length];
-                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                piece.style.animationDuration = `${Math.random() * 1.8 + 2}s`;
-                piece.style.animationDelay = `${Math.random() * 0.4}s`;
-                document.body.appendChild(piece);
-                setTimeout(() => piece.remove(), 4000);
-            }
-        }
-
-        // --------------------------------------------------------------------
-        // 4.3 NAVEGAÇÃO ENTRE ABAS E MODAIS
-        // --------------------------------------------------------------------
-        window.switchTab = function(tabName) {
-            ['login', 'dashboard', 'admin'].forEach(v => {
-                const el = document.getElementById(`view-${v}`);
-                if (el) el.classList.add('hidden');
-            });
-
-            ['login', 'admin'].forEach(btnKey => {
-                const btn = document.getElementById(`tab-${btnKey}`);
-                if (!btn) return;
-                if (btnKey === tabName) {
-                    btn.className = 'px-5 py-2.5 rounded-xl font-bold text-sm transition-all bg-gradient-to-r from-amber-500 to-yellow-500 text-emerald-950 shadow-lg shadow-amber-500/20';
-                } else {
-                    btn.className = 'px-5 py-2.5 rounded-xl font-semibold text-sm transition-all bg-emerald-950/80 text-emerald-100 border border-emerald-700/60 hover:border-amber-400/50';
-                }
-            });
-
-            const targetView = document.getElementById(`view-${tabName}`);
-            if (targetView) targetView.classList.remove('hidden');
-
-            if (tabName === 'admin') updateAdminLockUI();
-        };
-
-        window.openCustomModal = function(title, message, onConfirm) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').textContent = message;
-            modalCallback = onConfirm;
-            document.getElementById('customModal').classList.remove('hidden');
-        };
-
-        window.closeCustomModal = function() {
-            document.getElementById('customModal').classList.add('hidden');
-            modalCallback = null;
-        };
-
-        document.getElementById('modalConfirmBtn').addEventListener('click', () => {
-            if (typeof modalCallback === 'function') modalCallback();
-            closeCustomModal();
-        });
-
-        // --------------------------------------------------------------------
-        // 4.4 PARSER INTELIGENTE E CONEXÃO COM A NUVEM (FIREBASE FIRESTORE)
-        // --------------------------------------------------------------------
-        function parseFirebaseConfigInput(rawText) {
-            if (!rawText || typeof rawText !== 'string') return null;
-            const trimmed = rawText.trim();
-            if (!trimmed) return null;
-
-            // Tenta JSON puro primeiro
-            try {
-                const direct = JSON.parse(trimmed);
-                if (direct && direct.apiKey && direct.projectId) return direct;
-            } catch (_) {}
-
-            // Extrai o bloco { ... } mesmo que o usuário cole "const firebaseConfig = { ... };"
-            const startIdx = trimmed.indexOf('{');
-            const endIdx = trimmed.lastIndexOf('}');
-            if (startIdx === -1 || endIdx === -1 || endIdx <= startIdx) return null;
-
-            const objectBody = trimmed.slice(startIdx, endIdx + 1);
-            const extracted = {};
-            const keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId', 'measurementId'];
-
-            keys.forEach(key => {
-                const regex = new RegExp(`["']?${key}["']?\\s*:\\s*["']([^"']+)["']`);
-                const match = objectBody.match(regex);
-                if (match && match[1]) {
-                    extracted[key] = match[1].trim();
-                }
-            });
-
-            if (extracted.apiKey && extracted.projectId) {
-                return extracted;
-            }
-            return null;
-        }
-
-        function resolveFirebaseConfig() {
-            // 1. Configuração embutida diretamente no código (ideal para GitHub Pages)
-            if (CONFIGURACAO_NUVEM_HOSPEDAGEM && CONFIGURACAO_NUVEM_HOSPEDAGEM.apiKey) {
-                return CONFIGURACAO_NUVEM_HOSPEDAGEM;
-            }
-
-            // 2. Configuração colada no Painel do Administrador Geral e salva neste navegador
-            try {
-                const savedLocalCfg = window.localStorage.getItem(SAVED_CLOUD_CONFIG_KEY);
-                if (savedLocalCfg) {
-                    const parsed = JSON.parse(savedLocalCfg);
-                    if (parsed && parsed.apiKey && parsed.projectId) return parsed;
-                }
-            } catch (_) {}
-
-            // 3. Configuração injetada pelo ambiente de pré-visualização
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                try {
-                    const parsed = typeof __firebase_config === 'string'
-                        ? JSON.parse(__firebase_config)
-                        : __firebase_config;
-                    if (parsed && parsed.apiKey) return parsed;
-                } catch (_) {}
-            }
-
-            return null;
-        }
-
-        async function connectToFirebaseWithConfig(configObj) {
-            if (!configObj || !configObj.apiKey || !configObj.projectId) {
-                throw new Error('Configuração do Firebase inválida.');
-            }
-
-            if (unsubscribeSnapshot) {
-                unsubscribeSnapshot();
-                unsubscribeSnapshot = null;
-            }
-
-            // Reinicia instância do Firebase se já havia uma anterior
-            const existingApps = getApps();
-            for (const existing of existingApps) {
-                await deleteApp(existing);
-            }
-
-            app = initializeApp(configObj);
-            db = getFirestore(app);
-
-            // Tenta autenticação anônima se disponível, mas não bloqueia o Firestore
-            // caso o usuário tenha ativado apenas o Firestore em Modo de Teste no Firebase Console
-            try {
-                auth = getAuth(app);
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (authErr) {
-                console.info('Prosseguindo com acesso direto ao Firestore em Modo de Teste:', authErr?.code || authErr);
-            }
-
-            // Testa leitura e inicialização das 13 contas na nuvem
-            await seedInitialFirebaseAccounts();
-
-            activeFirebaseConfigObj = configObj;
-            storageMode = 'firebase';
-            updateConnectionBadge();
-            startFirebaseRealtimeListener();
-        }
-
-        async function initStorageSystem() {
-            const detectedConfig = resolveFirebaseConfig();
-
-            if (detectedConfig) {
-                const pasteArea = document.getElementById('firebaseConfigPasteArea');
-                if (pasteArea && !pasteArea.value.trim()) {
-                    pasteArea.value = `const firebaseConfig = ${JSON.stringify(detectedConfig, null, 2)};`;
-                }
-
-                try {
-                    await connectToFirebaseWithConfig(detectedConfig);
-                    return;
-                } catch (err) {
-                    console.warn('Não foi possível conectar ao Firebase ainda, usando Modo Local:', err);
-                }
-            }
-
-            activateLocalStorageMode();
-        }
-
-        function updateConnectionBadge() {
-            const badge = document.getElementById('connectionStatus');
-            const localBanner = document.getElementById('localWarningBanner');
-            const adminCloudPill = document.getElementById('adminCloudPill');
-
-            if (storageMode === 'firebase') {
-                badge.innerHTML = '🟢 Nuvem Conectada (GitHub/Online)';
-                badge.className = 'px-3.5 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-400/60 text-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow';
-                if (localBanner) localBanner.classList.add('hidden');
-                if (adminCloudPill) {
-                    adminCloudPill.textContent = '🟢 Sincronizado na Nuvem';
-                    adminCloudPill.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40';
-                }
-            } else {
-                badge.innerHTML = '⚠️ Modo Local (Configure a Nuvem para celular)';
-                badge.className = 'px-3.5 py-1.5 rounded-full bg-amber-950/90 border border-amber-400/60 text-amber-200 text-xs font-bold flex items-center gap-1.5 shadow';
-                if (localBanner) localBanner.classList.remove('hidden');
-                if (adminCloudPill) {
-                    adminCloudPill.textContent = '⚠️ Apenas Local (Sem Nuvem)';
-                    adminCloudPill.className = 'px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40';
-                }
-            }
-        }
-
-        // --- Operações no Banco em Nuvem (Firebase Firestore) ---
-        function getParticipantsCollectionRef() {
-            return collection(db, 'artifacts', appId, 'public', 'data', 'participants');
-        }
-
-        function getParticipantDocRef(id) {
-            return doc(db, 'artifacts', appId, 'public', 'data', 'participants', id);
-        }
-
-        async function seedInitialFirebaseAccounts() {
-            const participantsCol = getParticipantsCollectionRef();
-            const existingSnap = await getDocs(participantsCol);
-            const existingIds = new Set();
-            existingSnap.forEach(d => existingIds.add(d.id));
-
-            if (existingSnap.empty || existingIds.has('fam_01_angelo')) {
-                for (let i = 0; i < INITIAL_FAMILY_MEMBERS.length; i++) {
-                    const member = INITIAL_FAMILY_MEMBERS[i];
-                    if (!existingIds.has(member.id)) {
-                        await setDoc(getParticipantDocRef(member.id), {
-                            name: member.name,
-                            pin: member.pin,
-                            wishlist: '',
-                            wishlistUpdatedAt: null,
-                            hasDrawn: false,
-                            drawnTargetId: null,
-                            drawnTargetName: null,
-                            isAlreadyPicked: false,
-                            createdAt: Date.now() + i
-                        });
-                    }
-                }
-            }
-        }
-
-        function startFirebaseRealtimeListener() {
-            const participantsCol = getParticipantsCollectionRef();
-
-            unsubscribeSnapshot = onSnapshot(participantsCol, (snapshot) => {
-                const list = [];
-                snapshot.forEach((docSnap) => {
-                    list.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR'));
-                participants = list;
-                renderAllUI();
-            }, (error) => {
-                console.error('Erro na sincronização em tempo real com Firestore:', error);
-                showToast('⚠️ Verifique as regras do Firestore (Modo de Teste) no Firebase Console.', 'error');
-                activateLocalStorageMode();
-            });
-        }
-
-        // --- Modo Local (Fallback quando não há Firebase configurado) ---
-        function activateLocalStorageMode() {
-            storageMode = 'local';
-            updateConnectionBadge();
-            loadAndSeedLocalData();
-
-            window.addEventListener('storage', (event) => {
-                if (event.key === LOCAL_STORAGE_KEY && storageMode === 'local') {
-                    loadAndSeedLocalData();
-                }
-            });
-        }
-
-        function loadAndSeedLocalData() {
-            let list = [];
-            try {
-                const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed)) list = parsed;
-                }
-            } catch (_) {
-                list = [];
-            }
-
-            let changed = false;
-            const existingIds = new Set(list.map(item => item.id));
-
-            if (list.length === 0 || existingIds.has('fam_01_angelo')) {
-                INITIAL_FAMILY_MEMBERS.forEach((member, idx) => {
-                    if (!existingIds.has(member.id)) {
-                        list.push({
-                            id: member.id,
-                            name: member.name,
-                            pin: member.pin,
-                            wishlist: '',
-                            wishlistUpdatedAt: null,
-                            hasDrawn: false,
-                            drawnTargetId: null,
-                            drawnTargetName: null,
-                            isAlreadyPicked: false,
-                            createdAt: Date.now() + idx
-                        });
-                        changed = true;
-                    }
-                });
-            }
-
-            list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR'));
-            participants = list;
-            if (changed) saveLocalParticipants(list);
-            renderAllUI();
-        }
-
-        function saveLocalParticipants(updatedList) {
-            updatedList.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR'));
-            participants = updatedList;
-            try {
-                window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedList));
-            } catch (e) {
-                console.error('Erro ao salvar dados locais:', e);
-            }
-            renderAllUI();
-        }
-
-        // --- Camada Unificada de Atualização (Nuvem ou Local) ---
-        async function dbUpdateParticipant(id, fields) {
-            if (storageMode === 'firebase') {
-                await updateDoc(getParticipantDocRef(id), fields);
-            } else {
-                const next = participants.map(p => p.id === id ? { ...p, ...fields } : p);
-                saveLocalParticipants(next);
-            }
-        }
-
-        async function dbAddParticipant(newObj) {
-            if (storageMode === 'firebase') {
-                await setDoc(getParticipantDocRef(newObj.id), newObj);
-            } else {
-                saveLocalParticipants([...participants, newObj]);
-            }
-        }
-
-        async function dbDeleteParticipant(id) {
-            if (storageMode === 'firebase') {
-                await deleteDoc(getParticipantDocRef(id));
-            } else {
-                const next = participants.filter(p => p.id !== id);
-                saveLocalParticipants(next);
-            }
-        }
-
-        // --------------------------------------------------------------------
-        // 4.5 RENDERIZAÇÃO DAS TELAS EM TEMPO REAL
-        // --------------------------------------------------------------------
-        function renderAllUI() {
-            renderLoginSelect();
-            renderPublicStatusBoard();
-            renderAdminTable();
-            if (loggedParticipantId) renderLoggedDashboard();
-        }
-
-        function renderLoginSelect() {
-            const select = document.getElementById('loginParticipantSelect');
-            const currentVal = select.value;
-            select.innerHTML = '';
-
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = '';
-            defaultOpt.textContent = participants.length === 0
-                ? 'Preparando lista da família...'
-                : 'Selecione seu nome na lista...';
-            select.appendChild(defaultOpt);
-
-            // Opção exclusiva do Administrador Geral
-            const adminOpt = document.createElement('option');
-            adminOpt.value = GENERAL_ADMIN_ID;
-            adminOpt.textContent = '🛡️ Administrador Geral (Organizador)';
-            select.appendChild(adminOpt);
-
-            participants.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = p.id;
-                opt.textContent = p.hasDrawn ? `${p.name} (✅ Já sorteou)` : `${p.name}`;
-                select.appendChild(opt);
-            });
-
-            if (currentVal) select.value = currentVal;
-        }
-
-        function renderPublicStatusBoard() {
-            const grid = document.getElementById('publicStatusGrid');
-            const total = participants.length;
-            const drawnCount = participants.filter(p => p.hasDrawn).length;
-
-            document.getElementById('progressPill').textContent = `${drawnCount} / ${total} sortearam`;
-            const pct = total > 0 ? Math.round((drawnCount / total) * 100) : 0;
-            document.getElementById('progressBar').style.width = `${pct}%`;
-
-            grid.innerHTML = '';
-            participants.forEach(p => {
-                const hasTip = p.wishlist && p.wishlist.trim().length >= 5;
-                const card = document.createElement('div');
-                card.className = `px-3.5 py-2.5 rounded-xl border flex items-center justify-between gap-2 ${
-                    p.hasDrawn
-                        ? 'bg-emerald-950/85 border-emerald-500/40 text-emerald-100'
-                        : 'bg-amber-950/30 border-amber-500/25 text-amber-100'
-                }`;
-                card.innerHTML = `
-                    <div class="min-w-0">
-                        <div class="font-medium text-sm truncate">${escapeHtml(p.name)}</div>
-                        <div class="text-[10px] ${hasTip ? 'text-emerald-300/85' : 'text-amber-300/75'}">
-                            ${hasTip ? '💡 Dica salva' : '📝 Falta dica'}
-                        </div>
-                    </div>
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
-                        p.hasDrawn ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
-                    }">
-                        ${p.hasDrawn ? '✅ Sorteou' : '⏳ Falta'}
-                    </span>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        // --------------------------------------------------------------------
-        // 4.6 LOGIN, VERIFICAÇÃO OBRIGATÓRIA DE DICA (MESMO PÓS-SORTEIO) E PIN
-        // --------------------------------------------------------------------
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const selectedId = document.getElementById('loginParticipantSelect').value;
-            const enteredPin = document.getElementById('loginPinInput').value.trim();
-
-            if (!selectedId) {
-                showToast('Escolha seu nome na lista primeiro.', 'error');
-                return;
-            }
-
-            if (selectedId === GENERAL_ADMIN_ID) {
-                if (enteredPin === GENERAL_ADMIN_PIN) {
-                    isAdminUnlocked = true;
-                    document.getElementById('loginPinInput').value = '';
-                    showToast('🛡️ Bem-vindo, Administrador Geral!', 'success');
-                    switchTab('admin');
-                } else {
-                    showToast('PIN do Administrador Geral incorreto!', 'error');
-                    document.getElementById('loginPinInput').value = '';
-                }
-                return;
-            }
-
-            const user = participants.find(p => p.id === selectedId);
-            if (!user) {
-                showToast('Participante não encontrado.', 'error');
-                return;
-            }
-
-            if (user.pin !== enteredPin) {
-                showToast('PIN incorreto! Se nunca trocou, o inicial é 1234.', 'error');
-                document.getElementById('loginPinInput').value = '';
-                return;
-            }
-
-            loggedParticipantId = user.id;
-            document.getElementById('loginPinInput').value = '';
-            document.getElementById('wishlistWarningAlert').classList.add('hidden');
-            showToast(`Bem-vindo(a), ${user.name}! 🎄`, 'success');
-            switchTab('dashboard');
-            renderLoggedDashboard();
-        });
-
-        window.logoutUser = function() {
-            loggedParticipantId = null;
-            switchTab('login');
-        };
-
-        function renderLoggedDashboard() {
-            const me = participants.find(p => p.id === loggedParticipantId);
-            if (!me) {
-                logoutUser();
-                return;
-            }
-
-            document.getElementById('dashUserName').textContent = me.name;
-
-            // 1. Verifica se o participante ainda usa o PIN padrão '1234'
-            const defaultPinAlert = document.getElementById('defaultPinAlertBox');
-            if (me.pin === '1234') {
-                defaultPinAlert.classList.remove('hidden');
-            } else {
-                defaultPinAlert.classList.add('hidden');
-            }
-
-            // 2. Preenche campo da dica caso não esteja digitando nele agora
-            const wishInput = document.getElementById('myWishlistEdit');
-            if (document.activeElement !== wishInput) {
-                wishInput.value = me.wishlist || '';
-            }
-
-            // 3. Verifica se a Dica de Presente obrigatória está válida (>= 5 caracteres)
-            const savedWish = (me.wishlist || '').trim();
-            const hasValidWish = savedWish.length >= 5;
-            const statusBadge = document.getElementById('wishlistStatusBadge');
-            const warningAlert = document.getElementById('wishlistWarningAlert');
-
-            if (hasValidWish) {
-                statusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
-                statusBadge.textContent = '✅ Dica Salva';
-                warningAlert.classList.add('hidden');
-            } else {
-                statusBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-400/30';
-                statusBadge.textContent = '⚠️ Obrigatória';
-            }
-
-            const pendingBox = document.getElementById('drawPendingBox');
-            const completedBox = document.getElementById('drawCompletedBox');
-            const lockedRevealBox = document.getElementById('lockedRevealNoticeBox');
-
-            // 4. REGRA CRÍTICA:
-            // Se o usuário já sorteou MAS ainda não salvou sua própria dica de presente,
-            // bloqueia a visualização do amigo tirado até que ele salve sua dica!
-            if (me.hasDrawn && me.drawnTargetId) {
-                pendingBox.classList.add('hidden');
-
-                if (!hasValidWish) {
-                    completedBox.classList.add('hidden');
-                    lockedRevealBox.classList.remove('hidden');
-                } else {
-                    lockedRevealBox.classList.add('hidden');
-                    completedBox.classList.remove('hidden');
-
-                    const target = participants.find(p => p.id === me.drawnTargetId);
-                    document.getElementById('revealedTargetName').textContent = target ? target.name : (me.drawnTargetName || 'Sorteado');
-
-                    const targetWish = target && target.wishlist ? target.wishlist.trim() : '';
-                    const liveBadge = document.getElementById('targetWishlistLiveBadge');
-                    const wishEl = document.getElementById('revealedTargetWishlist');
-
-                    if (targetWish.length >= 5) {
-                        const isRecent = target.wishlistUpdatedAt && (Date.now() - target.wishlistUpdatedAt < 1000 * 60 * 60 * 24);
-                        liveBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
-                        liveBadge.textContent = isRecent ? '✨ Dica atualizada recentemente!' : '💡 Dica salva';
-                        wishEl.textContent = `"${targetWish}"`;
-                        wishEl.className = 'text-sm text-emerald-50 italic leading-relaxed';
-                    } else {
-                        liveBadge.className = 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30';
-                        liveBadge.textContent = '⏳ Aguardando dica';
-                        wishEl.textContent = '⏳ Seu amigo secreto ainda está escrevendo a dica dele... Assim que ele entrar e salvar, aparecerá aqui automaticamente!';
-                        wishEl.className = 'text-xs sm:text-sm text-amber-200/90 leading-relaxed';
-                    }
-                }
-            } else {
-                // Ainda não sorteou
-                completedBox.classList.add('hidden');
-                lockedRevealBox.classList.add('hidden');
-                pendingBox.classList.remove('hidden');
-
-                const btnDraw = document.getElementById('btnExecuteDraw');
-                const lockText = document.getElementById('drawLockExplanation');
-
-                if (hasValidWish) {
-                    btnDraw.className = 'w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-400 text-emerald-950 font-black text-base sm:text-lg shadow-xl shadow-amber-500/25 transition-all active:scale-95';
-                    lockText.innerHTML = 'Sua dica já está salva! Clique abaixo para sortear <strong>uma única pessoa</strong> da família.';
-                } else {
-                    btnDraw.className = 'w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-950/90 border border-amber-400/40 text-amber-200/80 font-bold text-base sm:text-lg transition-all';
-                    lockText.innerHTML = '⚠️ <strong>Passo obrigatório:</strong> Salve sua dica de presente acima para liberar o sorteio!';
-                }
-
-                const availableCount = participants.filter(p => !p.isAlreadyPicked && p.id !== me.id).length;
-                document.getElementById('drawPoolHint').textContent =
-                    `${availableCount} opção(ões) disponível(is) para sorteio.`;
-            }
-        }
-
-        window.applyWishlistExample = function(exampleText) {
-            const input = document.getElementById('myWishlistEdit');
-            input.value = exampleText;
-            input.focus();
-            showToast('Exemplo preenchido! Ajuste se quiser e clique em "Salvar Dica".', 'info');
-        };
-
-        window.saveMyWishlist = async function() {
-            if (!loggedParticipantId) return;
-            const input = document.getElementById('myWishlistEdit');
-            const newWish = input.value.trim();
-
-            if (newWish.length < 5) {
-                document.getElementById('wishlistWarningAlert').classList.remove('hidden');
-                showToast('Escreva uma dica de presente mais completa (mínimo 5 letras).', 'error');
-                input.focus();
-                return;
-            }
-
-            try {
-                await dbUpdateParticipant(loggedParticipantId, {
-                    wishlist: newWish,
-                    wishlistUpdatedAt: Date.now()
-                });
-                document.getElementById('wishlistWarningAlert').classList.add('hidden');
-                showToast('✅ Dica de presente salva na nuvem com sucesso!', 'success');
-            } catch (err) {
-                showToast('Erro ao salvar dica. Verifique a conexão e tente novamente.', 'error');
-            }
-        };
-
-        window.saveQuickPersonalPin = async function() {
-            if (!loggedParticipantId) return;
-            const newPin = document.getElementById('quickNewPinInput').value.trim();
-            if (!/^\d{4}$/.test(newPin) || newPin === '1234') {
-                showToast('Escolha um PIN pessoal de 4 números diferente de 1234.', 'error');
-                return;
-            }
-            try {
-                await dbUpdateParticipant(loggedParticipantId, { pin: newPin });
-                document.getElementById('quickNewPinInput').value = '';
-                showToast(`🔐 PIN pessoal salvo (${newPin})! Guarde-o com segurança.`, 'success');
-            } catch (err) {
-                showToast('Erro ao salvar seu novo PIN.', 'error');
-            }
-        };
-
-        window.changeMyPersonalPin = async function() {
-            if (!loggedParticipantId) return;
-            const newPin = document.getElementById('myNewPinInput').value.trim();
-            if (!/^\d{4}$/.test(newPin)) {
-                showToast('O novo PIN precisa ter exatamente 4 números.', 'error');
-                return;
-            }
-            try {
-                await dbUpdateParticipant(loggedParticipantId, { pin: newPin });
-                document.getElementById('myNewPinInput').value = '';
-                showToast(`🔐 Seu PIN pessoal foi atualizado para ${newPin}!`, 'success');
-            } catch (err) {
-                showToast('Erro ao atualizar PIN.', 'error');
-            }
-        };
-
-        // --------------------------------------------------------------------
-        // 5. LÓGICA MATEMÁTICA DO SORTEIO ÚNICO (SEM REPETIÇÃO E SEM DEADLOCK)
-        // --------------------------------------------------------------------
-        function pickValidTarget(allDocs, drawerId) {
-            const me = allDocs.find(d => d.id === drawerId);
-            if (!me) throw new Error('Participante não encontrado.');
-            if (me.hasDrawn) throw new Error('Você já realizou seu sorteio único!');
-            if (!me.wishlist || me.wishlist.trim().length < 5) {
-                throw new Error('Salve sua dica de presente antes de sortear!');
-            }
-
-            const validCandidates = allDocs.filter(d => !d.isAlreadyPicked && d.id !== me.id);
-            if (validCandidates.length === 0) {
-                throw new Error('Não há mais nomes disponíveis.');
-            }
-
-            // Proteção Anti-Deadlock para a penúltima pessoa não travar a última
-            const remainingOtherDrawers = allDocs.filter(d => !d.hasDrawn && d.id !== me.id);
-            if (remainingOtherDrawers.length === 1) {
-                const lastDrawer = remainingOtherDrawers[0];
-                const mustPickLast = validCandidates.find(c => c.id === lastDrawer.id);
-                if (mustPickLast) return mustPickLast;
-            }
-
-            const randomIndex = Math.floor(Math.random() * validCandidates.length);
-            return validCandidates[randomIndex];
-        }
-
-        window.executeSecretDraw = async function() {
-            if (!loggedParticipantId) return;
-
-            const meLocal = participants.find(p => p.id === loggedParticipantId);
-            if (!meLocal) return;
-
-            if (meLocal.hasDrawn) {
-                showToast('Você já realizou seu sorteio! Apenas o Administrador Geral pode resetar.', 'error');
-                renderLoggedDashboard();
-                return;
-            }
-
-            const currentInputVal = document.getElementById('myWishlistEdit').value.trim();
-            const savedWish = (meLocal.wishlist || '').trim();
-
-            if (savedWish.length < 5) {
-                const warningBox = document.getElementById('wishlistWarningAlert');
-                warningBox.classList.remove('hidden');
-                warningBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                document.getElementById('myWishlistEdit').focus();
-
-                if (currentInputVal.length >= 5) {
-                    showToast('⚠️ Clique primeiro no botão verde "Salvar Dica" antes de sortear!', 'error');
-                } else {
-                    showToast('🚨 Escreva e salve sua Dica de Presente antes de sortear!', 'error');
-                }
-                return;
-            }
-
-            if (participants.length < 3) {
-                showToast('É preciso ter pelo menos 3 pessoas cadastradas!', 'error');
-                return;
-            }
-
-            const btn = document.getElementById('btnExecuteDraw');
-            const giftIcon = document.getElementById('giftBoxIcon');
-            btn.disabled = true;
-            btn.textContent = '✨ Sorteando...';
-            giftIcon.classList.add('animate-gift-shake');
-
-            await new Promise(r => setTimeout(r, 1200));
-
-            try {
-                let resultTarget = null;
-
-                if (storageMode === 'firebase') {
-                    // Transação atômica na nuvem garantindo que duas pessoas nunca tirem o mesmo nome
-                    resultTarget = await runTransaction(db, async (transaction) => {
-                        const freshDocs = [];
-                        for (const p of participants) {
-                            const pRef = getParticipantDocRef(p.id);
-                            const snap = await transaction.get(pRef);
-                            if (snap.exists()) {
-                                freshDocs.push({ id: snap.id, ref: pRef, ...snap.data() });
-                            }
-                        }
-
-                        const me = freshDocs.find(d => d.id === loggedParticipantId);
-                        const chosen = pickValidTarget(freshDocs, loggedParticipantId);
-
-                        transaction.update(me.ref, {
-                            hasDrawn: true,
-                            drawnTargetId: chosen.id,
-                            drawnTargetName: chosen.name,
-                            drawnAt: Date.now()
-                        });
-
-                        transaction.update(chosen.ref, {
-                            isAlreadyPicked: true
-                        });
-
-                        return chosen;
-                    });
-                } else {
-                    loadAndSeedLocalData();
-                    const chosen = pickValidTarget(participants, loggedParticipantId);
-                    const updatedList = participants.map(item => {
-                        if (item.id === loggedParticipantId) {
-                            return {
-                                ...item,
-                                hasDrawn: true,
-                                drawnTargetId: chosen.id,
-                                drawnTargetName: chosen.name,
-                                drawnAt: Date.now()
-                            };
-                        }
-                        if (item.id === chosen.id) {
-                            return { ...item, isAlreadyPicked: true };
-                        }
-                        return item;
-                    });
-                    saveLocalParticipants(updatedList);
-                    resultTarget = chosen;
-                }
-
-                giftIcon.classList.remove('animate-gift-shake');
-                btn.disabled = false;
-                btn.textContent = '🎲 Realizar Meu Sorteio!';
-                launchConfetti();
-                showToast(`🎉 Você tirou ${resultTarget.name}!`, 'success');
-            } catch (err) {
-                console.error('Erro no sorteio:', err);
-                giftIcon.classList.remove('animate-gift-shake');
-                btn.disabled = false;
-                btn.textContent = '🎲 Realizar Meu Sorteio!';
-                showToast(err.message || 'Erro ao sortear. Tente novamente.', 'error');
-            }
-        };
-
-        // --------------------------------------------------------------------
-        // 6. FUNÇÕES EXCLUSIVAS DO ADMINISTRADOR GERAL (PIN 2511) & EXPORTAÇÃO GITHUB
-        // --------------------------------------------------------------------
-        function updateAdminLockUI() {
-            const lockBox = document.getElementById('adminLockBox');
-            const panelBox = document.getElementById('adminPanelBox');
-
-            if (isAdminUnlocked) {
-                lockBox.classList.add('hidden');
-                panelBox.classList.remove('hidden');
-                updateConnectionBadge();
-            } else {
-                lockBox.classList.remove('hidden');
-                panelBox.classList.add('hidden');
-            }
-        }
-
-        document.getElementById('adminUnlockForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const inputVal = document.getElementById('adminMasterInput').value.trim();
-
-            if (inputVal === GENERAL_ADMIN_PIN) {
-                isAdminUnlocked = true;
-                document.getElementById('adminMasterInput').value = '';
-                showToast('🛡️ Acesso de Administrador Geral liberado!', 'success');
-                updateAdminLockUI();
-            } else {
-                showToast('PIN incorreto! Acesso restrito ao Administrador Geral.', 'error');
-                document.getElementById('adminMasterInput').value = '';
-            }
-        });
-
-        window.lockAdminPanel = function() {
-            isAdminUnlocked = false;
-            updateAdminLockUI();
-            showToast('Painel do Administrador Geral bloqueado.', 'info');
-        };
-
-        // Conecta imediatamente o firebaseConfig colado pelo Administrador Geral
-        window.applyAndTestFirebaseConfig = async function() {
-            if (!isAdminUnlocked) return;
-            const rawText = document.getElementById('firebaseConfigPasteArea').value;
-            const parsed = parseFirebaseConfigInput(rawText);
-
-            if (!parsed) {
-                showToast('Não encontrei apiKey e projectId válidos no texto colado. Copie o bloco firebaseConfig completo.', 'error');
-                return;
-            }
-
-            showToast('⏳ Conectando ao banco de dados na nuvem...', 'info');
-            try {
-                await connectToFirebaseWithConfig(parsed);
-                window.localStorage.setItem(SAVED_CLOUD_CONFIG_KEY, JSON.stringify(parsed));
-                showToast('🟢 Nuvem conectada! Agora clique em "Baixar index.html Pronto para GitHub" para publicar.', 'success');
-            } catch (err) {
-                console.error('Erro ao conectar Firebase:', err);
-                showToast('Erro ao conectar no Firebase. Confira se ativou o Firestore no "Modo de Teste".', 'error');
-            }
-        };
-
-        // Gera e baixa o arquivo index.html completo já com as chaves embutidas para subir no GitHub
-        window.downloadReadyGitHubHtml = function() {
-            if (!isAdminUnlocked) return;
-            const rawText = document.getElementById('firebaseConfigPasteArea').value;
-            const parsed = parseFirebaseConfigInput(rawText) || activeFirebaseConfigObj;
-
-            if (!parsed || !parsed.apiKey || !parsed.projectId) {
-                showToast('Cole primeiro o seu firebaseConfig na caixa acima antes de baixar o index.html!', 'error');
-                document.getElementById('firebaseConfigPasteArea').focus();
-                return;
-            }
-
-            // Captura todo o HTML atual e substitui o placeholder CONFIGURACAO_NUVEM_HOSPEDAGEM pelas chaves reais
-            const fullCurrentHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-            const configJsonPretty = JSON.stringify(parsed, null, 12);
-            const targetPlaceholder = 'const CONFIGURACAO_NUVEM_HOSPEDAGEM = null;';
-
-            if (!fullCurrentHtml.includes(targetPlaceholder)) {
-                showToast('Erro ao preparar o arquivo HTML. Tente recarregar a página.', 'error');
-                return;
-            }
-
-            const readyHtml = fullCurrentHtml.replace(
-                targetPlaceholder,
-                `const CONFIGURACAO_NUVEM_HOSPEDAGEM = ${configJsonPretty};`
-            );
-
-            const blob = new Blob([readyHtml], { type: 'text/html;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'index.html';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
-            showToast('⬇️ Arquivo "index.html" baixado! Suba ele no seu repositório do GitHub Pages.', 'success');
-        };
-
-        window.clearSavedCloudConfig = function() {
-            if (!isAdminUnlocked) return;
-            window.localStorage.removeItem(SAVED_CLOUD_CONFIG_KEY);
-            document.getElementById('firebaseConfigPasteArea').value = '';
-            activeFirebaseConfigObj = null;
-            showToast('Configuração salva neste navegador removida.', 'info');
-        };
-
-        document.getElementById('adminAddParticipantForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!isAdminUnlocked) return;
-
-            const nameEl = document.getElementById('adminNewName');
-            const pinEl = document.getElementById('adminNewPin');
-            const cleanName = nameEl.value.trim();
-            const cleanPin = pinEl.value.trim();
-
-            if (!/^\d{4}$/.test(cleanPin)) {
-                showToast('O PIN deve ter exatamente 4 números.', 'error');
-                return;
-            }
-            if (participants.some(p => p.name.toLowerCase() === cleanName.toLowerCase())) {
-                showToast('Esse nome já está na lista!', 'error');
-                return;
-            }
-            if (participants.some(p => p.hasDrawn)) {
-                showToast('O sorteio já começou! Resete o sorteio antes de adicionar alguém.', 'error');
-                return;
-            }
-
-            const newParticipant = {
-                id: 'part_' + Date.now(),
-                name: cleanName,
-                pin: cleanPin,
-                wishlist: '',
-                wishlistUpdatedAt: null,
-                hasDrawn: false,
-                drawnTargetId: null,
-                drawnTargetName: null,
-                isAlreadyPicked: false,
-                createdAt: Date.now()
-            };
-
-            await dbAddParticipant(newParticipant);
-            showToast(`${cleanName} adicionado(a) com PIN ${cleanPin}!`, 'success');
-            nameEl.value = '';
-            pinEl.value = '1234';
-        });
-
-        function renderAdminTable() {
-            document.getElementById('adminTotalCount').textContent = participants.length;
-            const tbody = document.getElementById('adminParticipantsTable');
-            tbody.innerHTML = '';
-
-            participants.forEach(p => {
-                const hasTip = p.wishlist && p.wishlist.trim().length >= 5;
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-emerald-900/30 transition';
-                tr.innerHTML = `
-                    <td class="px-4 py-3 font-semibold text-white">${escapeHtml(p.name)}</td>
-                    <td class="px-4 py-3 font-mono text-amber-300 font-bold">${escapeHtml(p.pin)}</td>
-                    <td class="px-4 py-3 text-xs">
-                        ${hasTip ? '<span class="text-emerald-300 font-semibold">✅ Preenchida</span>' : '<span class="text-red-300">⚠️ Falta</span>'}
-                    </td>
-                    <td class="px-4 py-3">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
-                            p.hasDrawn ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
-                        }">
-                            ${p.hasDrawn ? '✅ Já sorteou' : '⏳ Pendente'}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-right space-x-2">
-                        <button onclick="resetParticipantPin('${p.id}', '${escapeHtml(p.name)}')" class="text-xs text-amber-300 hover:text-amber-200 underline">
-                            PIN 1234
-                        </button>
-                        <button onclick="confirmDeleteParticipant('${p.id}', '${escapeHtml(p.name)}')" class="text-xs text-red-400 hover:text-red-300 font-semibold px-2 py-1 rounded-lg hover:bg-red-950/60">
-                            Remover
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        window.resetParticipantPin = async function(id, name) {
-            if (!isAdminUnlocked) return;
-            await dbUpdateParticipant(id, { pin: '1234' });
-            showToast(`PIN de ${name} restaurado para 1234!`, 'success');
-        };
-
-        window.confirmDeleteParticipant = function(id, name) {
-            if (!isAdminUnlocked) return;
-            if (participants.some(p => p.hasDrawn)) {
-                showToast('Resete o sorteio antes de remover alguém.', 'error');
-                return;
-            }
-            openCustomModal(
-                'Remover Participante',
-                `Deseja remover "${name}" da lista do Amigo Secreto da Chácara?`,
-                async () => {
-                    await dbDeleteParticipant(id);
-                    showToast(`${name} removido(a).`, 'info');
-                }
-            );
-        };
-
-        window.openResetModal = function() {
-            if (!isAdminUnlocked) {
-                showToast('Acesso negado! Apenas o Administrador Geral pode resetar.', 'error');
-                return;
-            }
-            openCustomModal(
-                '🛡️ Resetar Todo o Sorteio?',
-                'Atenção Administrador Geral: isso apagará todos os pares sorteados para que a família sorteie novamente do zero (os nomes e as dicas de presente serão mantidos). Confirmar?',
-                async () => {
-                    if (storageMode === 'firebase') {
-                        for (const p of participants) {
-                            await dbUpdateParticipant(p.id, {
-                                hasDrawn: false,
-                                drawnTargetId: null,
-                                drawnTargetName: null,
-                                isAlreadyPicked: false
-                            });
-                        }
-                    } else {
-                        const resetList = participants.map(p => ({
-                            ...p,
-                            hasDrawn: false,
-                            drawnTargetId: null,
-                            drawnTargetName: null,
-                            isAlreadyPicked: false
-                        }));
-                        saveLocalParticipants(resetList);
-                    }
-                    showToast('🔄 Sorteio resetado pelo Administrador Geral!', 'success');
-                }
-            );
-        };
-
-        window.copyWhatsAppInvite = function() {
-            const pageUrl = window.location.href;
-            const text =
-`🎄 *AMIGO SECRETO DA CHÁCARA* 🎄
-✨ Já está valendo o nosso sorteio de Natal!
-
-🎁 *Valor do presente:* Somente até R$ 50,00
-📅 *Disponível até:* 1º de Janeiro
-
-👉 *Como participar (sem baixar nada):*
-1. Acesse o link: ${pageUrl}
-2. Selecione o seu *Nome* na lista
-3. Digite a senha inicial: *1234* (e crie seu PIN pessoal depois de entrar)
-4. Escreva e salve sua *Dica de Presente* (obrigatória para todos!)
-5. Clique em *Realizar Meu Sorteio* (você só pode sortear 1 vez!)
-
-🤫 Guarde bem o segredo!`;
-
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                showToast('📲 Convite copiado! Cole agora no grupo do WhatsApp da família!', 'success');
-            } catch (err) {
-                showToast('Não foi possível copiar automaticamente.', 'error');
-            }
-            document.body.removeChild(textarea);
-        };
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>"']/g, (m) => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[m]));
-        }
-
-        // Inicia o sistema
-        initStorageSystem();
-    </script>
-</body>
-</html>
+  <!-- ======================================================================
+       SEÇÃO 1: CABEÇALHO, METADADOS E FONTES
+       Define o título da página, responsividade no celular e fontes natalinas.
+  ====================================================================== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amigo Secreto da Chácara 🎄</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- ======================================================================
+       SEÇÃO 2: ESTILOS VISUAIS E ANIMAÇÕES (CSS)
+       Controla cores natalinas, neve caindo, pisca-pisca sequencial e cartões.
+  ====================================================================== -->
+  <style>
+    :root {
+      --bg-dark: #071911;
+      --bg-card: rgba(13, 39, 27, 0.90);
+      --border-gold: rgba(245, 197, 66, 0.35);
+      --gold: #f5c542;
+      --gold-light: #ffe38f;
+      --red: #d92b3a;
+      --red-dark: #9e1925;
+      --green: #1ea866;
+      --text-main: #f8faf9;
+      --text-muted: #b8cfc2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at top, #133c29 0%, #081c13 55%, #040f0a 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 60px;
+    }
+
+    /* Flocos de neve animados */
+    .snow-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .snowflake {
+      position: absolute;
+      top: -20px;
+      color: rgba(255, 255, 255, 0.72);
+      user-select: none;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.85; }
+      90%  { opacity: 0.85; }
+      100% { transform: translateY(105vh) translateX(25px) rotate(360deg); opacity: 0; }
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 18px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Cabeçalho e Árvore com Pisca-Pisca Sequencial */
+    header { text-align: center; padding: 8px 0 22px; }
+
+    .tree-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.55));
+    }
+    .christmas-tree { width: 165px; height: 200px; overflow: visible; }
+
+    .star-top {
+      transform-origin: 100px 22px;
+      animation: starPulse 2s ease-in-out infinite;
+    }
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px #ffd700); }
+      50%      { transform: scale(1.16); filter: drop-shadow(0 0 18px #fff2a6); }
+    }
+
+    .bulb {
+      animation: seqBlink 2.4s infinite ease-in-out;
+      animation-delay: calc(var(--seq) * 0.16s);
+    }
+    @keyframes seqBlink {
+      0%, 100% { opacity: 0.3; transform: scale(0.88); }
+      25%, 45% { opacity: 1; transform: scale(1.28); filter: drop-shadow(0 0 9px currentColor); }
+    }
+
+    .badge-natal {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(217, 43, 58, 0.24);
+      border: 1px solid rgba(245, 197, 66, 0.5);
+      color: var(--gold-light);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Título 100% responsivo (não corta em celulares nem computadores) */
+    h1.main-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.55rem, 4.3vw, 3.05rem);
+      font-weight: 900;
+      line-height: 1.2;
+      padding: 0 8px;
+      background: linear-gradient(135deg, #fff3b8 0%, #f5c542 50%, #e09f1f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 20px rgba(245, 197, 66, 0.22);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      max-width: 630px;
+      margin: 0 auto 14px;
+      line-height: 1.55;
+    }
+
+    .info-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .pill {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-gold);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .status-online { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .status-warn   { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+
+    /* Abas de Navegação */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 22px 0;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text-muted);
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #f5c542, #d49b1a);
+      color: #1c1402;
+      border-color: #ffe38f;
+      box-shadow: 0 6px 20px rgba(245, 197, 66, 0.32);
+    }
+
+    /* Cartões e Formulários */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      padding: 26px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 1.32rem;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card p.desc {
+      color: var(--text-muted);
+      font-size: 0.91rem;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .guide-box {
+      background: rgba(245, 197, 66, 0.08);
+      border: 1px solid rgba(245, 197, 66, 0.32);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #f4f7f5;
+    }
+    .guide-box strong { color: var(--gold-light); }
+
+    .form-group { margin-bottom: 15px; }
+    label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(4, 18, 12, 0.88);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.96rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.18);
+    }
+
+    /* Botões */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 22px;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.96rem;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      width: 100%;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(217, 43, 58, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .btn-primary:hover:not(:disabled) { box-shadow: 0 10px 28px rgba(217, 43, 58, 0.6); }
+    .btn-gold {
+      background: linear-gradient(135deg, #f5c542, #d49b1a);
+      color: #1d1402;
+      box-shadow: 0 8px 22px rgba(245, 197, 66, 0.3);
+    }
+    .btn-green {
+      background: linear-gradient(135deg, #1ea866, #137a48);
+      color: #fff;
+    }
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-main);
+    }
+    .btn-sm { width: auto; padding: 8px 13px; font-size: 0.82rem; border-radius: 9px; }
+
+    /* Chip de exemplos de presente */
+    .example-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 8px 0 12px;
+    }
+    .chip-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(245, 197, 66, 0.3);
+      color: var(--gold-light);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .chip-btn:hover { background: rgba(245, 197, 66, 0.2); }
+
+    /* Bloco de Destaque da Dica Obrigatória */
+    .dica-required-box {
+      background: rgba(217, 43, 58, 0.14);
+      border: 2px solid rgba(245, 197, 66, 0.55);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+      transition: all 0.25s ease;
+    }
+    .dica-required-box.ok {
+      background: rgba(30, 168, 102, 0.12);
+      border-color: rgba(30, 168, 102, 0.55);
+    }
+    .dica-required-box.shake {
+      animation: shakeAnim 0.45s ease;
+      border-color: #ff4d5e;
+      box-shadow: 0 0 22px rgba(217, 43, 58, 0.45);
+    }
+    @keyframes shakeAnim {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-7px); }
+      75% { transform: translateX(7px); }
+    }
+
+    /* Bloqueio de visualização de resultado até preencher dica */
+    .locked-result-box {
+      background: rgba(217, 43, 58, 0.16);
+      border: 2px dashed rgba(245, 197, 66, 0.65);
+      border-radius: 18px;
+      padding: 22px;
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* Cartão de Revelação do Amigo Secreto */
+    .reveal-box {
+      background: linear-gradient(145deg, rgba(217, 43, 58, 0.24), rgba(245, 197, 66, 0.16));
+      border: 2px solid var(--gold);
+      border-radius: 18px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-top: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .reveal-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+    .reveal-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #fff;
+      margin: 10px 0;
+      text-shadow: 0 0 18px rgba(245, 197, 66, 0.6);
+    }
+    .wishlist-tag {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      color: #e9f5ee;
+      margin-top: 8px;
+      max-width: 100%;
+    }
+
+    /* Lista da Família (Sem Spoilers) */
+    .member-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .member-item {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 14px;
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .member-info strong { display: block; font-size: 0.96rem; color: #fff; }
+    .member-info span { font-size: 0.78rem; color: var(--text-muted); }
+
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 999px
